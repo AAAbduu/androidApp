@@ -1,4 +1,4 @@
-package com.example.androidfinalassignment.views
+package com.example.androidfinalassignment.views.onboard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

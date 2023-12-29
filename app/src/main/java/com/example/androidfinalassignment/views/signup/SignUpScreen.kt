@@ -1,12 +1,8 @@
-package com.example.androidfinalassignment.views
+package com.example.androidfinalassignment.views.signup
 
-import android.widget.RadioGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,27 +19,30 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.androidfinalassignment.viewModels.SignUpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(
+) {
+    val signUpViewModel: SignUpViewModel = SignUpViewModel(
+    )
+
+    val signUpUiState by signUpViewModel.uiState.collectAsState()
+
     val sexOptionsRadio = listOf(
         "male",
         "female"
@@ -102,17 +101,6 @@ fun SignUpScreen() {
         "vietnamese"
     )
 
-    val signUpViewModel = SignUpViewModel()
-    var name by remember { mutableStateOf("Name") }
-    var genderSelection by remember { mutableStateOf(sexOptionsRadio[0]) }
-    var weight by remember { mutableStateOf(60f) }
-    var height by remember { mutableStateOf(170f) }
-    var age by remember { mutableStateOf("18") }
-    var mealNumbers by remember { mutableStateOf("3") }
-    var dietPreferenceSelection by remember { mutableStateOf(dietPreferenceList[0]) }
-    var foodAllergies by remember { mutableStateOf(emptyList<String>()) }
-    var cuisineDislikes by remember { mutableStateOf(emptyList<String>()) }
-
 
     Column(
         modifier = Modifier
@@ -131,8 +119,8 @@ fun SignUpScreen() {
             item {
                 // Name
                 OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
+                    value = signUpUiState.name,
+                    onValueChange = { signUpViewModel.updateName(it) },
                     label = { Text("Name", color = Color.White) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -150,8 +138,8 @@ fun SignUpScreen() {
 
                 // Weight
                 Slider(
-                    value = weight,
-                    onValueChange = { weight = it },
+                    value = signUpUiState.weight,
+                    onValueChange = { signUpViewModel.updateWeight(it) },
                     valueRange = 0f..200f,
                     steps = 100,
                     modifier = Modifier
@@ -162,15 +150,15 @@ fun SignUpScreen() {
                     )
                 )
                 Text(
-                    text = "Weight: ${weight.toInt()} kg",
+                    text = "Weight: ${signUpUiState.weight.toInt()} kg",
                     color = Color.White,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
                 // Height
                 Slider(
-                    value = height,
-                    onValueChange = { height = it },
+                    value = signUpUiState.height,
+                    onValueChange = { signUpViewModel.updateHeight(it) },
                     valueRange = 0f..250f,
                     steps = 100,
                     modifier = Modifier
@@ -181,7 +169,7 @@ fun SignUpScreen() {
                     )
                 )
                 Text(
-                    text = "Height: ${height.toInt()} cm",
+                    text = "Height: ${signUpUiState.height.toInt()} cm",
                     color = Color.White,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -197,8 +185,8 @@ fun SignUpScreen() {
                     items(sexOptionsRadio) { sex ->
 
                         RadioButton(
-                            selected = genderSelection == sex,
-                            onClick = { genderSelection = sex },
+                            selected = signUpUiState.genderSelection == sex,
+                            onClick = { signUpViewModel.updateGenderSelection(sex) },
                             modifier = Modifier
                         )
                         Text(
@@ -210,8 +198,8 @@ fun SignUpScreen() {
 
                 // Age
                 OutlinedTextField(
-                    value = age,
-                    onValueChange = { age = it },
+                    value = signUpUiState.age,
+                    onValueChange = { signUpViewModel.updateAge(it) },
                     label = { Text("Age", color = Color.White) },
                     textStyle = TextStyle(color = Color.White),
                     modifier = Modifier
@@ -232,8 +220,8 @@ fun SignUpScreen() {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
                 OutlinedTextField(
-                    value = mealNumbers,
-                    onValueChange = { mealNumbers = it },
+                    value = signUpUiState.mealNumbers.toString(),
+                    onValueChange = { signUpViewModel.updateMealNumbers(it) },
                     label = { Text("Nº Meals", color = Color.White) },
                     textStyle = TextStyle(color = Color.White),
                     modifier = Modifier
@@ -265,8 +253,8 @@ fun SignUpScreen() {
                     items(dietPreferenceList) { diet ->
 
                         RadioButton(
-                            selected = dietPreferenceSelection == diet,
-                            onClick = { dietPreferenceSelection = diet },
+                            selected = signUpUiState.dietPreferenceSelection == diet,
+                            onClick = { signUpViewModel.updateDietPreference(diet) },
                             modifier = Modifier
                         )
                         Text(
@@ -293,15 +281,16 @@ fun SignUpScreen() {
                     items(foodAllergiesList) { allergy ->
                         Button(
                             onClick = {
-                                if (foodAllergies.contains(allergy))
-                                    foodAllergies = foodAllergies - allergy
+                                if (!signUpUiState.foodAllergies.contains(allergy))
+                                    signUpViewModel.addFoodAllergy(allergy)
+
                                 else
-                                    foodAllergies = foodAllergies + allergy
+                                    signUpViewModel.removeFoodAllergy(allergy)
                             },
                             modifier = Modifier.padding(end = 8.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (foodAllergies.contains(allergy)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
-                                contentColor = if (foodAllergies.contains(allergy)) Color.White else MaterialTheme.colorScheme.primary
+                                containerColor = if (signUpUiState.foodAllergies.contains(allergy)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+                                contentColor = if (signUpUiState.foodAllergies.contains(allergy)) Color.White else MaterialTheme.colorScheme.primary
                             )
                         ) {
                             Text(allergy.capitalize())
@@ -325,15 +314,15 @@ fun SignUpScreen() {
                     items(cuisineDislikesList) { cuisine ->
                         Button(
                             onClick = {
-                                if (cuisineDislikes.contains(cuisine))
-                                    cuisineDislikes = cuisineDislikes - cuisine
+                                if (!signUpUiState.cuisineDislikes.contains(cuisine))
+                                    signUpViewModel.addCuisineDislike(cuisine)
                                 else
-                                    cuisineDislikes = cuisineDislikes + cuisine
+                                    signUpViewModel.removeCuisineDislike(cuisine)
                             },
                             modifier = Modifier.padding(end = 8.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (cuisineDislikes.contains(cuisine)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
-                                contentColor = if (cuisineDislikes.contains(cuisine)) Color.White else MaterialTheme.colorScheme.primary
+                                containerColor = if (signUpUiState.cuisineDislikes.contains(cuisine)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+                                contentColor = if (signUpUiState.cuisineDislikes.contains(cuisine)) Color.White else MaterialTheme.colorScheme.primary
                             )
                         ) {
                             Text(cuisine.capitalize())
@@ -344,17 +333,6 @@ fun SignUpScreen() {
             item {
                 Button(
                     onClick = {
-                        signUpViewModel.collectUserData(
-                            name = name,
-                            weight = weight,
-                            height = height,
-                            age = age,
-                            gender = genderSelection,
-                            numberOfMeals = mealNumbers.toInt(),
-                            dietPreference = dietPreferenceSelection,
-                            foodAllergies = foodAllergies,
-                            cuisineDislikes = cuisineDislikes
-                        )
                     },
                     modifier = Modifier
                         .padding(vertical = 16.dp)
