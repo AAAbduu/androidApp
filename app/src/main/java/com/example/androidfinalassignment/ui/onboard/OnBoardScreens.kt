@@ -1,5 +1,6 @@
-package com.example.androidfinalassignment.views.onboard
+package com.example.androidfinalassignment.ui.onboard
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,14 +23,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.androidfinalassignment.R
 
 
+
 @Composable
-fun OnBoardScreens(){
+fun OnBoardScreens(
+    navController: NavController
+){
     val onBoardViews = onBoardViewsList
 
     val currentView = remember { mutableIntStateOf(0) }
+
 
     Column(
         modifier = Modifier
@@ -48,6 +54,7 @@ fun OnBoardScreens(){
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 16.dp),
+            navController = navController,
             currentPage = currentView.value,
             noOfPages = onBoardViews.size
         ) {
@@ -137,14 +144,14 @@ fun OnBoardText(modifier: Modifier, text: String) {
 
 @Composable
 fun OnBoardNavButton(
-    modifier: Modifier = Modifier, currentPage: Int, noOfPages: Int, onNextClicked: () -> Unit
+    modifier: Modifier = Modifier, navController: NavController, currentPage: Int, noOfPages: Int, onNextClicked: () -> Unit
 ) {
     Button(
         onClick = {
             if (currentPage < noOfPages - 1) {
                 onNextClicked()
             } else {
-                // Handle onboarding completion
+                navController.navigate("signUpScreen")
             }
         }, modifier = modifier
     ) {

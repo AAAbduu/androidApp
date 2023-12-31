@@ -3,24 +3,41 @@ package com.example.androidfinalassignment
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.androidfinalassignment.ui.theme.AndroidFinalAssignmentTheme
-import com.example.androidfinalassignment.views.onboard.OnBoardScreens
-import com.example.androidfinalassignment.views.signup.SignUpScreen
+import com.example.androidfinalassignment.ui.onboard.OnBoardScreens
+import com.example.androidfinalassignment.ui.signup.SignUpScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.androidfinalassignment.ui.mainview.*
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
-        val whatScreen = false
         super.onCreate(savedInstanceState)
         setContent {
+            val navControllerUnregistered = rememberNavController()
             AndroidFinalAssignmentTheme {
-                if (whatScreen) {
-                    OnBoardScreens()
-                } else {
-                    SignUpScreen()
+                NavHost(navController = navControllerUnregistered, startDestination = "mainViewScreen") {
+                    composable("onBoardScreens") {
+                        OnBoardScreens(navController = navControllerUnregistered)
+                    }
+                    composable("signUpScreen") {
+                        SignUpScreen(navController = navControllerUnregistered)
+                    }
+                    composable("mainViewScreen") {
+                        val navControllerRegistered = rememberNavController()
+                        val mainViewModelView: MainViewModelView = viewModel(factory = MainViewModelView.Factory)
+                        MainViewScreenView(navController = navControllerRegistered,
+                            mainViewModelView = mainViewModelView)
+                    }
                 }
             }
         }
@@ -31,6 +48,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     AndroidFinalAssignmentTheme {
-        OnBoardScreens()
+        val navController = rememberNavController()
+        OnBoardScreens(navController = navController)
     }
 }

@@ -38,8 +38,9 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Color.White,
     onSecondary = Color.White,
     onTertiary = Color.White,
-    onBackground = BackgroundColor,
-    onSurface = BackgroundColor600
+    onBackground = BackgroundColor100,
+    onSurface = BackgroundColor600,
+    onSecondaryContainer = BackgroundColor700
 )
 
 @Composable
@@ -62,7 +63,7 @@ fun AndroidFinalAssignmentTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }

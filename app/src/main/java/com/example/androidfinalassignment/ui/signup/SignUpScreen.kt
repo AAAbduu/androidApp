@@ -1,5 +1,6 @@
-package com.example.androidfinalassignment.views.signup
+package com.example.androidfinalassignment.ui.signup
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,78 +30,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
+    navController: NavController
 ) {
     val signUpViewModel: SignUpViewModel = SignUpViewModel(
     )
 
     val signUpUiState by signUpViewModel.uiState.collectAsState()
-
-    val sexOptionsRadio = listOf(
-        "male",
-        "female"
-    )
-
-    val foodAllergiesList = listOf(
-        "dairy",
-        "egg",
-        "gluten",
-        "peanut",
-        "sesame",
-        "seafood",
-        "shellfish",
-        "soy",
-        "sulfite",
-        "tree nut",
-        "wheat"
-    )
-
-    val dietPreferenceList = listOf(
-        "pescetarian",
-        "lacto vegetarian",
-        "ovo vegetarian",
-        "vegan",
-        "paleo",
-        "primal",
-        "vegetarian"
-    )
-
-    val cuisineDislikesList = listOf(
-        "african",
-        "american",
-        "british",
-        "cajun",
-        "caribbean",
-        "chinese",
-        "eastern european",
-        "european",
-        "french",
-        "german",
-        "greek",
-        "indian",
-        "irish",
-        "italian",
-        "japanese",
-        "jewish",
-        "korean",
-        "latin american",
-        "mediterranean",
-        "mexican",
-        "middle eastern",
-        "nordic",
-        "southern",
-        "spanish",
-        "thai",
-        "vietnamese"
-    )
-
 
     Column(
         modifier = Modifier
@@ -182,7 +128,7 @@ fun SignUpScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(sexOptionsRadio) { sex ->
+                    items(SexOptionsRadio.values()) { sex ->
 
                         RadioButton(
                             selected = signUpUiState.genderSelection == sex,
@@ -190,7 +136,7 @@ fun SignUpScreen(
                             modifier = Modifier
                         )
                         Text(
-                            text = sex.capitalize(),
+                            text = sex.toString().capitalize(),
                             color = Color.White
                         )
                     }
@@ -250,7 +196,7 @@ fun SignUpScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(dietPreferenceList) { diet ->
+                    items(DietPreferences.values()) { diet ->
 
                         RadioButton(
                             selected = signUpUiState.dietPreferenceSelection == diet,
@@ -258,7 +204,7 @@ fun SignUpScreen(
                             modifier = Modifier
                         )
                         Text(
-                            text = diet.capitalize(),
+                            text = diet.toString().capitalize(),
                             color = Color.White
                         )
                     }
@@ -278,7 +224,7 @@ fun SignUpScreen(
                         .padding(bottom = 16.dp)
                 ) {
 
-                    items(foodAllergiesList) { allergy ->
+                    items(FoodAllergies.values()) { allergy ->
                         Button(
                             onClick = {
                                 if (!signUpUiState.foodAllergies.contains(allergy))
@@ -293,7 +239,7 @@ fun SignUpScreen(
                                 contentColor = if (signUpUiState.foodAllergies.contains(allergy)) Color.White else MaterialTheme.colorScheme.primary
                             )
                         ) {
-                            Text(allergy.capitalize())
+                            Text(allergy.toString().capitalize())
                         }
                     }
                 }
@@ -311,7 +257,7 @@ fun SignUpScreen(
                         .padding(bottom = 16.dp)
                 ) {
 
-                    items(cuisineDislikesList) { cuisine ->
+                    items(CuisineDislikes.values()) { cuisine ->
                         Button(
                             onClick = {
                                 if (!signUpUiState.cuisineDislikes.contains(cuisine))
@@ -325,7 +271,7 @@ fun SignUpScreen(
                                 contentColor = if (signUpUiState.cuisineDislikes.contains(cuisine)) Color.White else MaterialTheme.colorScheme.primary
                             )
                         ) {
-                            Text(cuisine.capitalize())
+                            Text(cuisine.toString().capitalize())
                         }
                     }
                 }
@@ -333,6 +279,7 @@ fun SignUpScreen(
             item {
                 Button(
                     onClick = {
+                        navController.navigate("mainViewScreen")
                     },
                     modifier = Modifier
                         .padding(vertical = 16.dp)
@@ -349,5 +296,6 @@ fun SignUpScreen(
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun SignUpScreenPreview() {
-    SignUpScreen()
+    val navController = rememberNavController()
+    SignUpScreen(navController = navController)
 }

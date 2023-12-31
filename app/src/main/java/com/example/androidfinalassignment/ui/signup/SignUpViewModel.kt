@@ -1,11 +1,11 @@
-package com.example.androidfinalassignment.views.signup
+package com.example.androidfinalassignment.ui.signup
 
-import android.content.Context
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
-import com.example.androidfinalassignment.model.User
+import com.example.androidfinalassignment.data.User
+import com.example.androidfinalassignment.domain.RecipeResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.serialization.json.Json
 
 
 class SignUpViewModel() : ViewModel(){
@@ -30,7 +30,7 @@ class SignUpViewModel() : ViewModel(){
         _uiState.value = _uiState.value.copy(age = age)
     }
 
-    fun updateGenderSelection(genderSelection: String) {
+    fun updateGenderSelection(genderSelection: SexOptionsRadio) {
         _uiState.value = _uiState.value.copy(genderSelection = genderSelection)
     }
 
@@ -38,33 +38,34 @@ class SignUpViewModel() : ViewModel(){
         _uiState.value = _uiState.value.copy(mealNumbers = mealNumbers.toInt())
     }
 
-    fun updateDietPreference(dietPreferenceSelection: String) {
+    fun updateDietPreference(dietPreferenceSelection: DietPreferences) {
         _uiState.value = _uiState.value.copy(dietPreferenceSelection = dietPreferenceSelection)
     }
 
-    fun addFoodAllergy(foodAllergy: String) {
+    fun addFoodAllergy(foodAllergy: FoodAllergies) {
         val foodAllergies = _uiState.value.foodAllergies.toMutableList()
         foodAllergies.add(foodAllergy)
         _uiState.value = _uiState.value.copy(foodAllergies = foodAllergies)
     }
 
-    fun removeFoodAllergy(foodAllergy: String) {
+    fun removeFoodAllergy(foodAllergy: FoodAllergies) {
         val foodAllergies = _uiState.value.foodAllergies.toMutableList()
         foodAllergies.remove(foodAllergy)
         _uiState.value = _uiState.value.copy(foodAllergies = foodAllergies)
     }
 
-    fun addCuisineDislike(cuisineDislike: String) {
+    fun addCuisineDislike(cuisineDislike: CuisineDislikes) {
         val cuisineDislikes = _uiState.value.cuisineDislikes.toMutableList()
         cuisineDislikes.add(cuisineDislike)
         _uiState.value = _uiState.value.copy(cuisineDislikes = cuisineDislikes)
     }
 
-    fun removeCuisineDislike(cuisineDislike: String) {
+    fun removeCuisineDislike(cuisineDislike: CuisineDislikes) {
         val cuisineDislikes = _uiState.value.cuisineDislikes.toMutableList()
         cuisineDislikes.remove(cuisineDislike)
         _uiState.value = _uiState.value.copy(cuisineDislikes = cuisineDislikes)
     }
+
 
 
     fun collectUserData(
@@ -98,6 +99,8 @@ class SignUpViewModel() : ViewModel(){
             foodAllergies = foodAllergies,
             cuisineDislikes = cuisineDislikes,
             dietPreference = dietPreference,
+            dailyRecipes = emptyList(),
+            pastRecipes = emptyList()
         )
 
     }
