@@ -11,8 +11,7 @@ data class SignUpUiState(
     var weight: Float = 60f,
     var height: Float = 150f,
     var age: String = "18",
-    var mealNumbers: Int = 3,
     var dietPreferenceSelection: DietPreferences = DietPreferences.pescatarian,
     var foodAllergies: List<FoodAllergies> = emptyList(),
-    var cuisineDislikes: List<CuisineDislikes> = emptyList()
+    var cuisineDislikes: List<CuisineDislikes> = emptyList(),
 )

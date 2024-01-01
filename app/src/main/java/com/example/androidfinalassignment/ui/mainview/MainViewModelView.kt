@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.androidfinalassignment.FinalAssignmentApplication
-import com.example.androidfinalassignment.data.MyMealsRepository
+import com.example.androidfinalassignment.data.CentralRepository
 import com.example.androidfinalassignment.domain.Meal
 import com.example.androidfinalassignment.domain.RecipeResponse
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +16,13 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import java.io.IOException
 
-class MainViewModelView (private val myMealsRepository: MyMealsRepository): ViewModel(){
+class MainViewModelView (/*private val mealsRepository: MealsRepository,*/ private val centralRepository: CentralRepository): ViewModel(){
     private val _uiState = MutableStateFlow(MainViewUiState())
     val uiState = _uiState.asStateFlow()
+
+    init {
+        getMeals()
+    }
 
     fun updateName(name: String) {
         _uiState.value = _uiState.value.copy(name = name)
@@ -27,49 +31,27 @@ class MainViewModelView (private val myMealsRepository: MyMealsRepository): View
     fun updateSelectedTab(selectedTab: MainViewTabs) {
         _uiState.value = _uiState.value.copy(selectedTab = selectedTab)
     }
-      fun getMeals() {
-         viewModelScope.launch {
-             var mealsRetrieved = listOf<Meal>()
-             try {
-                 val response = myMealsRepository.getMealsDay(
-                     timeFrame = "day",
-                     targetCalories = 2000,
-                     offset = "vegetarian",
-                     exclude = "shellfish"
-                 )
-                 for (meal in response.meals) {
-                        val mealInfo = myMealsRepository.getMealInfo(
-                            id = meal.id,
-                            includeNutrition = true
-                        )
-                        println(mealInfo)
-                     mealInfo.body()?.let {
-                         val json = Json { ignoreUnknownKeys = true
-                             isLenient = true }
-                            val recipeResponse = json.decodeFromString(RecipeResponse.serializer(), it.string())
-                         val newMeal = Meal(
-                             id = meal.id,
-                             title = meal.title,
-                             imageType = meal.imageType,
-                             readyInMinutes = meal.readyInMinutes,
-                             servings = meal.servings,
-                             sourceUrl = meal.sourceUrl,
-                         )
-                            mealsRetrieved += newMeal
-                     }
-                 }
-             } catch (e: IOException) {
-                 e.printStackTrace()
-             }
-                _uiState.value = _uiState.value.copy(meals = mealsRetrieved)
-         }
-     }
+    fun getMeals() {
+     viewModelScope.launch {
+         val mealsRetrieved = centralRepository.retrieveSavedUsersMealPlan()
+         _uiState.value = _uiState.value.copy(meals = mealsRetrieved)
+        }
+    }
+
+    fun refreshMeals() {
+        viewModelScope.launch {
+            val mealsRetrieved = centralRepository.getNewMeals()
+            _uiState.value = _uiState.value.copy(meals = mealsRetrieved)
+        }
+    }
+
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as FinalAssignmentApplication)
-                val myMealsRepository = application.container.mealRepository
-                MainViewModelView(myMealsRepository)
+                //val myMealsRepository = application.container.mealRepository
+                val centralRepository = application.container.centralRepository
+                MainViewModelView(/*myMealsRepository,*/ centralRepository)
             }
         }
     }

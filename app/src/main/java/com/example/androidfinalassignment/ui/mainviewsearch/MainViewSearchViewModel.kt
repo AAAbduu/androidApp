@@ -1,7 +1,5 @@
 package com.example.androidfinalassignment.ui.mainviewsearch
 
-import android.app.Application
-import android.text.Spannable.Factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -9,19 +7,21 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.androidfinalassignment.FinalAssignmentApplication
-import com.example.androidfinalassignment.data.MyMealsRepository
+import com.example.androidfinalassignment.data.CentralRepository
 import com.example.androidfinalassignment.domain.AutocompleteMeal
 import com.example.androidfinalassignment.domain.Meal
+import com.example.androidfinalassignment.domain.RecipeResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
-class MainViewSearchViewModel(private val myMealsRepository: MyMealsRepository) : ViewModel(){
+class MainViewSearchViewModel(/*rivate val mealsRepository: MealsRepository,*/ private val centralRepository: CentralRepository) : ViewModel(){
 
     private val _uiState = MutableStateFlow(MainViewSearchUiState())
     val uiState = _uiState.asStateFlow()
+
 
     fun updateSearchQuery(searchQuery: String) {
         _uiState.value = _uiState.value.copy(query = searchQuery)
@@ -37,9 +37,9 @@ class MainViewSearchViewModel(private val myMealsRepository: MyMealsRepository) 
             var mealsRetrieved = listOf<Meal>()
 
             try {
-                val response = myMealsRepository.getAutocompletedTitleRecipe(
+                val response = centralRepository.getAutocompletedTitleRecipe(
                     query = uiState.value.query,
-                    number = 3
+                    number = 1
                 )
 
                 print(response)
@@ -51,15 +51,30 @@ class MainViewSearchViewModel(private val myMealsRepository: MyMealsRepository) 
                 }
 
                 for (meal in responseList) {
-                    val newMeal = Meal(
+                    val mealInfo = centralRepository.getMealInfo(
                         id = meal.id,
-                        title = meal.title,
-                        imageType = meal.imageType,
-                        readyInMinutes = 60,
-                        servings = 0,
-                        sourceUrl = ""
+                        includeNutrition = true
                     )
-                    mealsRetrieved += newMeal
+                    mealInfo.body()?.let {
+
+                        val json = Json {
+                            ignoreUnknownKeys = true
+                            isLenient = true
+                        }
+                        val mealInfo =
+                            json.decodeFromString(RecipeResponse.serializer(), it.string())
+                        val newMeal = Meal(
+                            id = meal.id,
+                            title = meal.title,
+                            imageType = meal.imageType,
+                            readyInMinutes = 60,
+                            servings = 0,
+                            sourceUrl = "",
+                            image = mealInfo.image
+                        )
+                        mealsRetrieved += newMeal
+                    }
+
                 }
             } catch (e: Exception) {
 
@@ -73,8 +88,9 @@ class MainViewSearchViewModel(private val myMealsRepository: MyMealsRepository) 
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer{
                 val application = (this[APPLICATION_KEY] as FinalAssignmentApplication)
-                val myMealsRepository = application.container.mealRepository
-                MainViewSearchViewModel(myMealsRepository)
+                //val myMealsRepository = application.container.mealRepository
+                val centralRepository = application.container.centralRepository
+                MainViewSearchViewModel(/*myMealsRepository,*/ centralRepository)
             }
         }
     }

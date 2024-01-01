@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.androidfinalassignment.ui.mainview.*
+import com.example.androidfinalassignment.ui.signup.SignUpViewModel
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +31,8 @@ class MainActivity : ComponentActivity() {
                         OnBoardScreens(navController = navControllerUnregistered)
                     }
                     composable("signUpScreen") {
-                        SignUpScreen(navController = navControllerUnregistered)
+                        val signUpViewModel: SignUpViewModel = viewModel(factory = SignUpViewModel.Factory)
+                        SignUpScreen(navController = navControllerUnregistered, signUpViewModel = signUpViewModel)
                     }
                     composable("mainViewScreen") {
                         val navControllerRegistered = rememberNavController()

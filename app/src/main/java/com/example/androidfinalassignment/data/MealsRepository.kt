@@ -5,7 +5,11 @@ import com.example.androidfinalassignment.network.MealsApiService
 import okhttp3.ResponseBody
 import retrofit2.Response
 
-interface MyMealsRepository {
+interface MealsRepository {
+
+    /**
+     * Retrieve 3 meals for a day from the API.
+     */
 
     suspend fun getMealsDay(
         timeFrame: String,
@@ -14,11 +18,17 @@ interface MyMealsRepository {
         exclude: String
     ) : MealsResponse
 
+    /**
+     * Retrieve a meal with specified id from the API.
+     */
     suspend fun getMealInfo(
         id: Int,
         includeNutrition: Boolean
     ) : Response<ResponseBody>
 
+    /**
+     * Retrieve meals that match the query from the API.
+     */
     suspend fun getAutocompletedTitleRecipe(
         query: String,
         number: Int
@@ -26,7 +36,7 @@ interface MyMealsRepository {
 
 }
 
-class NetworkMyMealsRepository(private val mealsApiService: MealsApiService) : MyMealsRepository {
+/*class NetworkMealsRepository(private val mealsApiService: MealsApiService) : MealsRepository {
     override suspend fun getMealsDay(
         timeFrame: String,
         targetCalories: Int,
@@ -58,4 +68,4 @@ class NetworkMyMealsRepository(private val mealsApiService: MealsApiService) : M
         )
     }
 
-}
+}*/

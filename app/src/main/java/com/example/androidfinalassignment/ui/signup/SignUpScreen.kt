@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,18 +36,22 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
-    navController: NavController
+    navController: NavController,
+    signUpViewModel: SignUpViewModel
 ) {
-    val signUpViewModel: SignUpViewModel = SignUpViewModel(
-    )
 
     val signUpUiState by signUpViewModel.uiState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+
 
     Column(
         modifier = Modifier
@@ -160,28 +165,6 @@ fun SignUpScreen(
                         unfocusedBorderColor = MaterialTheme.colorScheme.secondary
                     )
                 )
-                Text(
-                    text = "How many meals would you like to have per day?",
-                    color = Color.White,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                OutlinedTextField(
-                    value = signUpUiState.mealNumbers.toString(),
-                    onValueChange = { signUpViewModel.updateMealNumbers(it) },
-                    label = { Text("Nº Meals", color = Color.White) },
-                    textStyle = TextStyle(color = Color.White),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Words,
-                        keyboardType = KeyboardType.Number
-                    ),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary
-                    )
-                )
             }
             item {
                 Text(
@@ -279,6 +262,9 @@ fun SignUpScreen(
             item {
                 Button(
                     onClick = {
+                        coroutineScope.launch {
+                            signUpViewModel.createUser()
+                        }
                         navController.navigate("mainViewScreen")
                     },
                     modifier = Modifier
@@ -297,5 +283,6 @@ fun SignUpScreen(
 @Composable
 fun SignUpScreenPreview() {
     val navController = rememberNavController()
-    SignUpScreen(navController = navController)
+    val signUpViewModel: SignUpViewModel = viewModel(factory = SignUpViewModel.Factory)
+    SignUpScreen(navController = navController, signUpViewModel = signUpViewModel)
 }

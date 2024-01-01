@@ -1,5 +1,6 @@
 package com.example.androidfinalassignment.data
 
 interface AppContainer {
-    val mealRepository: MyMealsRepository
+    /*val mealRepository: MealsRepository*/
+    val centralRepository: CentralRepository
 }

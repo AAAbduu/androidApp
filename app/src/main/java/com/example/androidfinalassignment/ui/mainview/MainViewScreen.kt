@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,6 +28,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
@@ -141,7 +143,8 @@ fun MainHomeViewBody(
         modifier = modifier
             .padding(horizontal = 16.dp, vertical = 3.dp)
             .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = CenterHorizontally
     ){
         mainScreenUiState.meals.forEach { meal ->
             item {
@@ -151,6 +154,13 @@ fun MainHomeViewBody(
                         .fillMaxWidth()
                         .height(200.dp)
                 )
+            }
+        }
+        item {
+            Button(modifier = Modifier,
+                onClick = { mainViewModelView.refreshMeals()}
+            ) {
+                Text("Refresh")
             }
         }
     }

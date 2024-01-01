@@ -1,17 +1,18 @@
 package com.example.androidfinalassignment.domain
 
+import android.provider.ContactsContract.CommonDataKinds.Im
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 @Serializable
 data class MealsResponse (
     @SerialName("meals")
-    val meals: List<Meal>,
+    val meals: List<MealSerial>,
     @SerialName("nutrients")
     val nutrients: Nutrients
 )
 
 @Serializable
-data class Meal (
+data class MealSerial (
     @SerialName("id")
     val id: Int,
     @SerialName("title")
@@ -25,6 +26,7 @@ data class Meal (
     @SerialName("sourceUrl")
     val sourceUrl: String
 )
+
 
 @Serializable
 data class Nutrients (

@@ -1,14 +1,26 @@
 package com.example.androidfinalassignment.ui.signup
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.androidfinalassignment.FinalAssignmentApplication
 import com.example.androidfinalassignment.data.User
-import com.example.androidfinalassignment.domain.RecipeResponse
+import com.example.androidfinalassignment.data.CentralRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.serialization.json.Json
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import java.io.File.separator
 
 
-class SignUpViewModel() : ViewModel(){
+class SignUpViewModel(/*private val mealsRepository: MealsRepository,*/ private val centralRepository: CentralRepository) : ViewModel(){
+
+    init {
+        //deleteAllUsers()
+    }
 
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState = _uiState.asStateFlow()
@@ -32,10 +44,6 @@ class SignUpViewModel() : ViewModel(){
 
     fun updateGenderSelection(genderSelection: SexOptionsRadio) {
         _uiState.value = _uiState.value.copy(genderSelection = genderSelection)
-    }
-
-    fun updateMealNumbers(mealNumbers: String) {
-        _uiState.value = _uiState.value.copy(mealNumbers = mealNumbers.toInt())
     }
 
     fun updateDietPreference(dietPreferenceSelection: DietPreferences) {
@@ -68,41 +76,49 @@ class SignUpViewModel() : ViewModel(){
 
 
 
-    fun collectUserData(
-        name: String = "anonymous",
-        weight: Float = 60f,
-        height: Float = 150f,
-        age: String = "18",
-        gender: String = "male",
-        numberOfMeals: Int = 3,
-        dietPreference: String = "balanced",
-        foodAllergies: List<String> = emptyList(),
-        cuisineDislikes: List<String> = emptyList(),
+    suspend fun createUser(
     ) {
         var BMR: Double? = null
 
-        BMR = if (gender.equals("male")){
-            10 * weight + 6.25 * height - 5 * age.toInt() + 5
+        BMR = if (uiState.value.genderSelection.equals("male")){
+            10 * uiState.value.weight + 6.25 * uiState.value.height - 5 * uiState.value.age.toInt() + 5
         } else {
-            10 * weight + 6.25 * height - 5 * age.toInt() - 161
+            10 * uiState.value.weight + 6.25 * uiState.value.height - 5 * uiState.value.age.toInt() - 161
         }
         var dailyCalories = BMR?.times(1.2)
 
         val user = User(
-            name = name,
-            weight = weight,
-            height = height,
-            age = age,
-            gender = gender,
-            dailyCalories = dailyCalories?.toFloat()!!,
-            numberOfMeals = numberOfMeals,
-            foodAllergies = foodAllergies,
-            cuisineDislikes = cuisineDislikes,
-            dietPreference = dietPreference,
+            name = uiState.value.name,
+            weight = uiState.value.weight,
+            height = uiState.value.height,
+            age = uiState.value.age,
+            gender = uiState.value.genderSelection.toString(),
+            dailyCalories = dailyCalories!!,
+            foodAllergies = uiState.value.foodAllergies.joinToString(separator = ", "),
+            cuisineDislikes = uiState.value.cuisineDislikes.joinToString(separator = ", "),
+            dietPreference = uiState.value.dietPreferenceSelection.toString(),
             dailyRecipes = emptyList(),
             pastRecipes = emptyList()
         )
 
+        centralRepository.insertUser(user)
+
+    }
+
+    private fun deleteAllUsers() {
+        viewModelScope.launch {
+            centralRepository.deleteAllUsers()
+        }
+    }
+    companion object {
+        val Factory : ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as FinalAssignmentApplication)
+                /*val myMealsRepository = application.container.mealRepository*/
+                val centralRepository = application.container.centralRepository
+                SignUpViewModel(/*myMealsRepository,*/ centralRepository)
+            }
+        }
     }
 
 }
