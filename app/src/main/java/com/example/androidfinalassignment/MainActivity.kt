@@ -1,14 +1,18 @@
 package com.example.androidfinalassignment
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.viewModels
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -23,6 +27,9 @@ import com.example.androidfinalassignment.data.database.MyMealsDatabase
 import com.example.androidfinalassignment.ui.detailedrecipeview.DetailedRecipeScreen
 import com.example.androidfinalassignment.ui.detailedrecipeview.DetailedRecipeViewModel
 import com.example.androidfinalassignment.ui.mainview.*
+import com.example.androidfinalassignment.ui.mysplashscreen.ScreenState
+import com.example.androidfinalassignment.ui.mysplashscreen.SplashScreen
+import com.example.androidfinalassignment.ui.mysplashscreen.SplashScreenViewModel
 import com.example.androidfinalassignment.ui.signup.SignUpViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -34,23 +41,21 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        val splashScreenViewModel: SplashScreenViewModel by viewModels{
+            ViewModelFactory(application)
+        }
+        splashScreen.setKeepOnScreenCondition{splashScreenViewModel.screenState.value == ScreenState.splashScreen}
         setContent {
             val navControllerUnregistered = rememberNavController()
-            //check whether user exists in database and navigate to appropriate screen
-            LaunchedEffect (key1 = Unit){
-                val userExists = withContext(Dispatchers.Main) {
-                checkIfUserExists()
-                }
-                navControllerUnregistered.navigate(getStartDestination(userExists)){
-                    popUpTo("onBoardScreens"){
-                        inclusive = false
-                    }
-                }
-            }
             AndroidFinalAssignmentTheme {
-                NavHost(navController = navControllerUnregistered, startDestination = "onBoardScreens") {
+                NavHost(navController = navControllerUnregistered, startDestination = "splash") {
+                    composable("splash") {
+                        val splashScreenViewModel: SplashScreenViewModel = viewModel(factory = SplashScreenViewModel.Factory)
+                        SplashScreen(splashScreenViewModel = splashScreenViewModel, navController = navControllerUnregistered)
+                    }
+
                     composable("onBoardScreens") {
                         OnBoardScreens(navController = navControllerUnregistered)
                     }
@@ -73,37 +78,14 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    /**
-     * A method that checks whether the user exists in the database.
-     */
-    suspend private fun checkIfUserExists(): Boolean {
-        val userFlow = MyMealsDatabase.getDatabase(this).userDao().getAllItems()
-        val users = userFlow.firstOrNull()
-        if (users != null) {
-            return users.firstOrNull() != null
+    class ViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(SplashScreenViewModel::class.java)) {
+                val finalAssignmentApplication = application as FinalAssignmentApplication
+                val centralRepository = finalAssignmentApplication.container.centralRepository
+                return SplashScreenViewModel(centralRepository) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
-        return false
-    }
-
-    /**
-     * A method that returns the start destination of the app.
-     * @param userExists A boolean that indicates whether the user exists in the database.
-     */
-    private fun getStartDestination(userExists: Boolean): String {
-        return if (userExists) {
-            "mainViewScreen"
-        } else {
-            "onBoardScreens"
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AndroidFinalAssignmentTheme {
-        val navController = rememberNavController()
-        OnBoardScreens(navController = navController)
     }
 }
