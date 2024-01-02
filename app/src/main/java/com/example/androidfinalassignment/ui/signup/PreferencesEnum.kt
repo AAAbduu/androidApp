@@ -1,5 +1,9 @@
 package com.example.androidfinalassignment.ui.signup
 
+
+/**
+ * PreferencesEnum contains all the enums used in the SignUpScreen.
+ */
 enum class SexOptionsRadio {
     MALE,
     FEMALE

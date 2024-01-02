@@ -12,11 +12,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * DetailedRecipeViewModel is a view model that holds the state of the detailed recipe view.
+ *
+ * @param centralRepository is the repository that holds the data of the application.
+ */
 class DetailedRecipeViewModel (private val centralRepository: CentralRepository): ViewModel(){
     private val _uiState = MutableStateFlow(DetailedRecipeUiState())
     val uiState = _uiState.asStateFlow()
 
 
+    /**
+     * getRecipe is a function that retrieves the recipe from the repository.
+     *
+     * @param id is the id of the recipe to be retrieved.
+     */
     fun getRecipe(id: Int) {
         viewModelScope.launch {
             val recipeRetrieved = centralRepository.getRecipe(id)
@@ -50,6 +60,9 @@ class DetailedRecipeViewModel (private val centralRepository: CentralRepository)
     }
 
 
+    /**
+     * Factory is a companion object that creates the DetailedRecipeViewModel.
+     */
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {

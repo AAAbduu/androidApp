@@ -3,6 +3,10 @@ package com.example.androidfinalassignment.domain
 import android.provider.ContactsContract.CommonDataKinds.Im
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+/**
+ * A data class representing a meal Response from the API.
+ */
 @Serializable
 data class MealsResponse (
     @SerialName("meals")

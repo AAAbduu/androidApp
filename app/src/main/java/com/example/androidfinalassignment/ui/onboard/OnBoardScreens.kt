@@ -1,5 +1,6 @@
 package com.example.androidfinalassignment.ui.onboard
 
+import OnBoardView
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,12 +28,14 @@ import androidx.navigation.NavController
 import com.example.androidfinalassignment.R
 
 
-
+/**
+ * OnBoardScreens is the screen that is shown when the app is opened for the first time.
+ */
 @Composable
 fun OnBoardScreens(
     navController: NavController
 ){
-    val onBoardViews = onBoardViewsList
+    val onBoardViews = OnBoardViewsList.valuesList()
 
     val currentView = remember { mutableIntStateOf(0) }
 
@@ -64,27 +67,8 @@ fun OnBoardScreens(
 }
 
 
-data class OnBoardView(
-    val title: String,
-    val description: String,
-    val image: Int
-)
 
-val onBoardViewsList = listOf(
-    OnBoardView(
-        image = R.drawable.logo_color,
-        title = "Welcome to MyMeals!",
-        description = ""
-    ), OnBoardView(
-        image = R.drawable.on_board_view3,
-        title = "Whole meal plan ready everyday!",
-        description = "You will have a menu for the day prepared with as many meals as you selected and according to your necessities."
-    ), OnBoardView(
-        image = R.drawable.on_board_view2,
-        title = "Personalized meals!",
-        description = "Personalized meals according with your preferences and adopted to your food allergies."
-    )
-)
+
 
 @Composable
 fun OnBoardBody(

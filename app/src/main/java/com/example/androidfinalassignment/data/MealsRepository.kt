@@ -35,37 +35,3 @@ interface MealsRepository {
     ) : Response<ResponseBody>
 
 }
-
-/*class NetworkMealsRepository(private val mealsApiService: MealsApiService) : MealsRepository {
-    override suspend fun getMealsDay(
-        timeFrame: String,
-        targetCalories: Int,
-        offset: String,
-        exclude: String
-    ): MealsResponse {
-        return mealsApiService.getMealsDay(
-            timeFrame = timeFrame,
-            targetCalories = targetCalories,
-            offset = offset,
-            exclude = exclude
-        )
-    }
-
-    override suspend fun getMealInfo(id: Int, includeNutrition: Boolean): Response<ResponseBody> {
-        return mealsApiService.getMealInfo(
-            id = id,
-            includeNutrition = includeNutrition
-        )
-    }
-
-    override suspend fun getAutocompletedTitleRecipe(
-        query: String,
-        number: Int
-    ): Response<ResponseBody> {
-        return mealsApiService.getAutocompletedTitleRecipe(
-            query = query,
-            number = number
-        )
-    }
-
-}*/

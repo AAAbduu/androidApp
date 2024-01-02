@@ -17,21 +17,33 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
+
+/**
+ * MainViewSearchViewModel is the ViewModel of the MainViewSearchScreen.
+ */
 class MainViewSearchViewModel(/*rivate val mealsRepository: MealsRepository,*/ private val centralRepository: CentralRepository) : ViewModel(){
 
     private val _uiState = MutableStateFlow(MainViewSearchUiState())
     val uiState = _uiState.asStateFlow()
 
-
+    /**
+     * Updates the query in the uiState and calls findMeals().
+     */
     fun updateSearchQuery(searchQuery: String) {
         _uiState.value = _uiState.value.copy(query = searchQuery)
         findMeals()
     }
 
+    /**
+     * Updates the foundMeals in the uiState.
+     */
     fun updateFoundMeals(foundMeals: List<RecipeResponse>) {
         _uiState.value = _uiState.value.copy(foundMeals = foundMeals)
     }
 
+    /**
+     * Finds meals based on the query in the uiState.
+     */
     private fun findMeals() {
         viewModelScope.launch {
             var mealsRetrieved = listOf<RecipeResponse>()
@@ -76,6 +88,9 @@ class MainViewSearchViewModel(/*rivate val mealsRepository: MealsRepository,*/ p
         }
     }
 
+    /**
+     * Factory for creating a MainViewSearchViewModel with a constructor that takes a [MealsRepository] and a [CentralRepository].
+     */
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer{

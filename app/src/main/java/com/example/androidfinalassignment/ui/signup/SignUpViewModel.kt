@@ -16,7 +16,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.File.separator
 
-
+/**
+ * SignUpViewModel is the ViewModel of the SignUpScreen.
+ */
 class SignUpViewModel(/*private val mealsRepository: MealsRepository,*/ private val centralRepository: CentralRepository) : ViewModel(){
 
     init {
@@ -26,61 +28,90 @@ class SignUpViewModel(/*private val mealsRepository: MealsRepository,*/ private 
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState = _uiState.asStateFlow()
 
-
+    /**
+     * Updates the name in the uiState.
+     */
     fun updateName(name: String) {
         _uiState.value = _uiState.value.copy(name = name)
     }
+
+    /**
+     * Updates the weight in the uiState.
+     */
 
     fun updateWeight(weight: Float) {
         _uiState.value = _uiState.value.copy(weight = weight)
     }
 
+    /**
+     * Updates the height in the uiState.
+     */
     fun updateHeight(height: Float) {
         _uiState.value = _uiState.value.copy(height = height)
     }
 
+    /**
+     * Updates the age in the uiState.
+     */
     fun updateAge(age: String) {
         _uiState.value = _uiState.value.copy(age = age)
     }
+
+    /**
+     * Updates the genderSelection in the uiState.
+     */
 
     fun updateGenderSelection(genderSelection: SexOptionsRadio) {
         _uiState.value = _uiState.value.copy(genderSelection = genderSelection)
     }
 
+    /**
+     * Updates the dietPreferenceSelection in the uiState.
+     */
+
     fun updateDietPreference(dietPreferenceSelection: DietPreferences) {
         _uiState.value = _uiState.value.copy(dietPreferenceSelection = dietPreferenceSelection)
     }
+
+    /**
+     * Updates the foodAllergies in the uiState.
+     */
 
     fun addFoodAllergy(foodAllergy: FoodAllergies) {
         val foodAllergies = _uiState.value.foodAllergies.toMutableList()
         foodAllergies.add(foodAllergy)
         _uiState.value = _uiState.value.copy(foodAllergies = foodAllergies)
     }
-
+    /**
+     * Remove the foodAllergies in the uiState.
+     */
     fun removeFoodAllergy(foodAllergy: FoodAllergies) {
         val foodAllergies = _uiState.value.foodAllergies.toMutableList()
         foodAllergies.remove(foodAllergy)
         _uiState.value = _uiState.value.copy(foodAllergies = foodAllergies)
     }
 
+    /**
+     * Updates the cuisineDislikes in the uiState.
+     */
     fun addCuisineDislike(cuisineDislike: CuisineDislikes) {
         val cuisineDislikes = _uiState.value.cuisineDislikes.toMutableList()
         cuisineDislikes.add(cuisineDislike)
         _uiState.value = _uiState.value.copy(cuisineDislikes = cuisineDislikes)
     }
 
+    /**
+     * Remove the cuisineDislikes in the uiState.
+     */
     fun removeCuisineDislike(cuisineDislike: CuisineDislikes) {
         val cuisineDislikes = _uiState.value.cuisineDislikes.toMutableList()
         cuisineDislikes.remove(cuisineDislike)
         _uiState.value = _uiState.value.copy(cuisineDislikes = cuisineDislikes)
     }
 
-    private fun deleteDatabase() {
-        viewModelScope.launch {
-            centralRepository.delete()
-        }
-    }
-
+    /**
+     * Creates a user based on the uiState and stores it in the database.
+     */
     suspend fun createUser(
     ) {
         var BMR: Double? = null
@@ -110,11 +141,9 @@ class SignUpViewModel(/*private val mealsRepository: MealsRepository,*/ private 
 
     }
 
-    private fun deleteAllUsers() {
-        viewModelScope.launch {
-            centralRepository.deleteAllUsers()
-        }
-    }
+    /**
+     * Companion object to create the SignUpViewModelFactory
+     */
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {

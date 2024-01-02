@@ -9,6 +9,9 @@ import retrofit2.Retrofit
 import android.content.Context
 
 
+/**
+ * A class that provides the dependencies to the app.
+ */
 class DefaultAppContainer (private val context: Context): AppContainer {
     private val BASE_URL =
         "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
@@ -21,10 +24,6 @@ class DefaultAppContainer (private val context: Context): AppContainer {
     private val retrofitService: MealsApiService by lazy {
         retrofit.create(MealsApiService::class.java)
     }
-
-    /*override val mealRepository : MealsRepository by lazy {
-        NetworkMealsRepository(retrofitService)
-    }*/
 
     override val centralRepository: CentralRepository by lazy {
         CentralUserMealsRepository(MyMealsDatabase.getDatabase(context).userDao(), retrofitService, context)

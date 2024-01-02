@@ -45,6 +45,11 @@ import com.example.androidfinalassignment.ui.mainviewsearch.MainViewSearchUiStat
 import com.example.androidfinalassignment.ui.mainviewsearch.MainViewSearchViewModel
 import com.example.androidfinalassignment.ui.util.RecipeCard
 
+
+/**
+ * MainViewScreenView is a composable function that displays the main view.
+ */
+
 @ExperimentalMaterial3Api
 @Composable
 fun MainViewScreenView(
@@ -68,7 +73,6 @@ fun MainViewScreenView(
         },
         topBar = {
             MainViewTopBar(
-                mainViewModelView = mainViewModelView,
                 scrollBehavior = scrollBehavior
             )
         }
@@ -96,11 +100,13 @@ fun MainViewScreenView(
     }
 }
 
+/**
+ * MainViewTopBar is a composable function that displays the top bar of the main view.
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainViewTopBar(
-    mainViewModelView: MainViewModelView,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
     CenterAlignedTopAppBar(
@@ -121,6 +127,9 @@ fun MainViewTopBar(
     )
 }
 
+/**
+ * MainHomeViewBody is a composable function that displays the body of the main view.
+ */
 @Composable
 fun MainHomeViewBody(
     modifier: Modifier = Modifier,
@@ -157,6 +166,9 @@ fun MainHomeViewBody(
 
 }
 
+/**
+ * MainViewBottomBar is a composable function that displays the bottom bar of the main view.
+ */
 @Composable
 fun MainViewBottomBar(
     navController: NavController,
@@ -204,6 +216,8 @@ fun MainViewBottomBar(
 
 
 }
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

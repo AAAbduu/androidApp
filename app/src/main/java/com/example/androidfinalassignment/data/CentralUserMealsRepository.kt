@@ -16,6 +16,9 @@ import kotlinx.serialization.json.Json
 import okhttp3.ResponseBody
 import retrofit2.Response
 
+/**
+ * A repository that handles the work with users and meals.
+ */
 class CentralUserMealsRepository (private val userDao: UserDao, private val mealsApiService: MealsApiService, context: Context) : CentralRepository{
 
     override fun getAllUsersStream() = userDao.getAllItems()
@@ -62,6 +65,10 @@ class CentralUserMealsRepository (private val userDao: UserDao, private val meal
         )
     }
 
+    /**
+     * A function to retrieve meals for a day from the API.
+     * @param user The user for which the meals are generated.
+     */
     private suspend fun retrieveMeals(user: User) : List<RecipeResponse> = withContext(Dispatchers.IO){
         var mealsRetrieved = listOf<RecipeResponse>()
         try {

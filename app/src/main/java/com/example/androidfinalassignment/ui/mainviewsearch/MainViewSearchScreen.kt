@@ -26,6 +26,10 @@ import com.example.androidfinalassignment.ui.mainview.MainViewModelView
 import com.example.androidfinalassignment.ui.mainview.MainViewUiState
 import com.example.androidfinalassignment.ui.util.RecipeCard
 
+/**
+ * MainViewSearchScreen is the screen that is shown when the user clicks on the search icon in the bottom bar.
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainSearchViewBody(modifier: Modifier, mainViewSearchViewModel: MainViewSearchViewModel, navControllerUnregistered: NavController) {

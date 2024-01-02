@@ -42,6 +42,11 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
+
+
+/**
+ * SignUpScreen is the screen that is shown when the user clicks on the sign up button in the onBoardScreens.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(

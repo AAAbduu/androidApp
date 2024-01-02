@@ -73,6 +73,10 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    /**
+     * A method that checks whether the user exists in the database.
+     */
     suspend private fun checkIfUserExists(): Boolean {
         val userFlow = MyMealsDatabase.getDatabase(this).userDao().getAllItems()
         val users = userFlow.firstOrNull()
@@ -82,6 +86,10 @@ class MainActivity : ComponentActivity() {
         return false
     }
 
+    /**
+     * A method that returns the start destination of the app.
+     * @param userExists A boolean that indicates whether the user exists in the database.
+     */
     private fun getStartDestination(userExists: Boolean): String {
         return if (userExists) {
             "mainViewScreen"

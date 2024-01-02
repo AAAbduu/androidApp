@@ -30,15 +30,17 @@ import com.example.androidfinalassignment.domain.Nutrient
 import com.example.androidfinalassignment.domain.Nutrition
 import com.example.androidfinalassignment.domain.RecipeResponse
 
+
+/**
+ * RecipeCard is a composable that displays a recipe card.
+ * @param modifier Modifier to be applied to the layout.
+ * @param modifier Modifier to be applied to the layout.
+ */
 @Composable
 fun RecipeCard(
     modifier: Modifier,
     recipe: RecipeResponse,
     navControllerUnregistered: NavController
-    //recipeId: Int,
-    //isExpanded: Boolean,
-    //onRecipeClick: (Int) -> Unit,
-    //onToggleExpand: () -> Unit
 ) {
     Card(
         elevation = CardDefaults.cardElevation(

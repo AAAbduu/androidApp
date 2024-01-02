@@ -9,6 +9,9 @@ import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Response
 
+/**
+ * A repository that handles the work with users and meals.
+ */
 interface CentralRepository {
     /**
      * Retrieve all users from the database.

@@ -2,6 +2,10 @@ package com.example.androidfinalassignment.domain
 
 import kotlinx.serialization.Serializable
 
+/**
+ * A data class representing a meal.
+ */
+
 @Serializable
 data class Meal(
     val id: Int,

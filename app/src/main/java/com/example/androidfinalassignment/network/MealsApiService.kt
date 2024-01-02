@@ -15,11 +15,19 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 
-
-
+/**
+ * An interface to communicate with the API using Retrofit.
+ */
 
 interface MealsApiService {
 
+    /**
+     * A function to get a list of meals for a day.
+     * @param timeFrame The time frame for which the meals are generated.
+     * @param targetCalories The target calories for the day.
+     * @param offset The offset for the query.
+     * @param exclude The ingredients to be excluded from the meals.
+     */
     @Headers("X-RapidAPI-Key: REPLACE_ME")
     @GET("recipes/mealplans/generate")
     suspend fun getMealsDay(
@@ -29,6 +37,11 @@ interface MealsApiService {
         @Query("exclude") exclude: String
     ) : MealsResponse
 
+    /**
+     * A function to get more information about a meal.
+     * @param id The id of the meal.
+     * @param includeNutrition Whether to include nutrition information.
+     */
     @Headers("X-RapidAPI-Key: REPLACE_ME")
     @GET("recipes/{id}/information")
     suspend fun getMealInfo(
@@ -36,6 +49,11 @@ interface MealsApiService {
         @Query("includeNutrition") includeNutrition: Boolean
     ) : Response<ResponseBody>
 
+    /**
+     * A function to autocomplete a title for a meal.
+     * @param query The query to autocomplete.
+     * @param number The number of results to return.
+     */
     @Headers("X-RapidAPI-Key: REPLACE_ME")
     @GET("recipes/autocomplete")
     suspend fun getAutocompletedTitleRecipe(

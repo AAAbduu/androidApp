@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
+/**
+ * SignUpUiState is the state of the SignUpScreen.
+ */
 data class SignUpUiState(
     var name: String = "",
     var genderSelection: SexOptionsRadio = SexOptionsRadio.MALE,

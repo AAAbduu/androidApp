@@ -5,6 +5,9 @@ import androidx.room.PrimaryKey
 import com.example.androidfinalassignment.domain.Meal
 import com.example.androidfinalassignment.domain.RecipeResponse
 
+/**
+ * A data class representing a user.
+ */
 @Entity(tableName = "user_table")
 data class User(
     @PrimaryKey(autoGenerate = true)

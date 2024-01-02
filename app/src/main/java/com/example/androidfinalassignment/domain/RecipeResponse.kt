@@ -3,7 +3,10 @@ package com.example.androidfinalassignment.domain
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
+/**
+ * A data class representing a Recipe Response from the API, including detailed information about
+ * cooking, ingredients, equipment and instructions.
+ */
 @Serializable
 data class RecipeResponse(
     @SerialName("id")

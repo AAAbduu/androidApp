@@ -24,6 +24,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
+/**
+ * DetailedRecipeScreen is a composable function that displays the detailed recipe view.
+ *
+ * @param detailedRecipeViewModel is the view model that holds the state of the detailed recipe view.
+ * @param recipeId is the id of the recipe to be displayed.
+ */
+
 @Composable
 fun DetailedRecipeScreen (detailedRecipeViewModel: DetailedRecipeViewModel, recipeId: Int){
 
