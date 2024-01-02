@@ -27,4 +27,7 @@ interface UserDao {
     @Query("SELECT * from user_table ORDER BY name ASC")
     fun getAllItems(): Flow<List<User>>
 
+    @Query("DELETE FROM user_table")
+    fun delete()
+
 }

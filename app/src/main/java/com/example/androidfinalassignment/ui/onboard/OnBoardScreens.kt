@@ -151,7 +151,13 @@ fun OnBoardNavButton(
             if (currentPage < noOfPages - 1) {
                 onNextClicked()
             } else {
-                navController.navigate("signUpScreen")
+                navController.navigate("signUpScreen", builder = {
+                    // Specify the popUpTo and popUpToInclusive arguments
+                    popUpTo("onBoardScreens") {
+                        // Set popUpToInclusive to true if you want to include the onBoardScreens destination
+                        inclusive = false
+                    }
+                })
             }
         }, modifier = modifier
     ) {

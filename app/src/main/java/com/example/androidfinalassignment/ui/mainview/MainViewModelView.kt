@@ -24,10 +24,6 @@ class MainViewModelView (/*private val mealsRepository: MealsRepository,*/ priva
         getMeals()
     }
 
-    fun updateName(name: String) {
-        _uiState.value = _uiState.value.copy(name = name)
-    }
-
     fun updateSelectedTab(selectedTab: MainViewTabs) {
         _uiState.value = _uiState.value.copy(selectedTab = selectedTab)
     }
@@ -35,6 +31,12 @@ class MainViewModelView (/*private val mealsRepository: MealsRepository,*/ priva
      viewModelScope.launch {
          val mealsRetrieved = centralRepository.retrieveSavedUsersMealPlan()
          _uiState.value = _uiState.value.copy(meals = mealsRetrieved)
+        }
+    }
+
+    private fun deleteTable() {
+        viewModelScope.launch {
+            centralRepository.delete()
         }
     }
 

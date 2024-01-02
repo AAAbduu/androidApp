@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.androidfinalassignment.data.database.UserDao
 import com.example.androidfinalassignment.domain.Meal
 import com.example.androidfinalassignment.domain.MealsResponse
+import com.example.androidfinalassignment.domain.Nutrition
 import com.example.androidfinalassignment.domain.RecipeResponse
 import com.example.androidfinalassignment.network.MealsApiService
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,10 @@ class CentralUserMealsRepository (private val userDao: UserDao, private val meal
     override suspend fun updateUser(user: User) = userDao.update(user)
 
     override suspend fun deleteUser(user: User) = userDao.delete(user)
+
+    override suspend fun delete() {
+        userDao.delete()
+    }
 
     override suspend fun getMealsDay(
         timeFrame: String,
@@ -57,8 +62,8 @@ class CentralUserMealsRepository (private val userDao: UserDao, private val meal
         )
     }
 
-    private suspend fun retrieveMeals(user: User) : List<Meal> = withContext(Dispatchers.IO){
-        var mealsRetrieved = listOf<Meal>()
+    private suspend fun retrieveMeals(user: User) : List<RecipeResponse> = withContext(Dispatchers.IO){
+        var mealsRetrieved = listOf<RecipeResponse>()
         try {
             val response = getMealsDay(
                 timeFrame = "day",
@@ -80,16 +85,7 @@ class CentralUserMealsRepository (private val userDao: UserDao, private val meal
                     val mealInfo =
                         json.decodeFromString(RecipeResponse.serializer(), it.string())
 
-                    val newMeal = Meal(
-                        id = meal.id,
-                        title = meal.title,
-                        imageType = meal.imageType,
-                        readyInMinutes = meal.readyInMinutes,
-                        servings = meal.servings,
-                        sourceUrl = meal.sourceUrl,
-                        image = mealInfo.image,
-                    )
-                    mealsRetrieved += newMeal
+                    mealsRetrieved += mealInfo
                 }
             }
         } catch (e: Exception) {
@@ -98,10 +94,10 @@ class CentralUserMealsRepository (private val userDao: UserDao, private val meal
         return@withContext mealsRetrieved
     }
 
-    override suspend fun retrieveSavedUsersMealPlan(): List<Meal> {
+    override suspend fun retrieveSavedUsersMealPlan(): List<RecipeResponse> {
         val userFlow = getAllUsersStream()
-        val userF = userFlow.first()
-        val user = userF.firstOrNull()
+        val userF = userFlow.firstOrNull()
+        val user = userF?.firstOrNull()
 
         if(user != null && user.dailyRecipes.isNotEmpty()){
             return user.dailyRecipes
@@ -113,7 +109,7 @@ class CentralUserMealsRepository (private val userDao: UserDao, private val meal
 
 
 
-    override suspend fun getNewMeals(): List<Meal> {
+    override suspend fun getNewMeals(): List<RecipeResponse> {
         val userFlow = getAllUsersStream()
         val userF = userFlow.first()
         val user = userF.firstOrNull()
@@ -127,7 +123,38 @@ class CentralUserMealsRepository (private val userDao: UserDao, private val meal
         return emptyList()
     }
 
-   override suspend fun deleteAllUsers() {
+    override suspend fun getRecipe(id: Int): RecipeResponse {
+        val userFlow = getAllUsersStream()
+        val userF = userFlow.first()
+        val user = userF.firstOrNull()
+        if(user != null) {
+
+            //return the recipe if it is in the daily recipes
+            user.dailyRecipes.forEach {
+                if(it.id == id){
+                    return it
+                }
+            }
+
+            val mealInfo = getMealInfo(
+                id = id,
+                includeNutrition = true
+            )
+            mealInfo.body()?.let {
+
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                }
+                val mealInfo =
+                    json.decodeFromString(RecipeResponse.serializer(), it.string())
+                return mealInfo
+            }
+        }
+        return RecipeResponse(0, "", 0, 0, "", "", "", Nutrition(emptyList()), "", emptyList())
+    }
+
+    override suspend fun deleteAllUsers() {
         val users = userDao.getAllItems().first()
         for (user in users) {
             deleteUser(user)

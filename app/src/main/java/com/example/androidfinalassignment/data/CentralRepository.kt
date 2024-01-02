@@ -2,6 +2,7 @@ package com.example.androidfinalassignment.data
 
 import com.example.androidfinalassignment.domain.Meal
 import com.example.androidfinalassignment.domain.MealsResponse
+import com.example.androidfinalassignment.domain.RecipeResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -35,6 +36,11 @@ interface CentralRepository {
     suspend fun deleteUser(user: User)
 
     /**
+     * Delete the table in the database.
+     */
+    suspend fun delete()
+
+    /**
      * Retrieve 3 meals for a day from the API.
      */
 
@@ -65,7 +71,7 @@ interface CentralRepository {
     /**
      * Check if the user exists in the database and return the last meal plan.
      */
-    suspend fun retrieveSavedUsersMealPlan(): List<Meal>
+    suspend fun retrieveSavedUsersMealPlan(): List<RecipeResponse>
 
     /**
      * Delete all users from the database.
@@ -80,6 +86,11 @@ interface CentralRepository {
     /**
      * Retrieve new meals for the user.
      */
-    suspend fun getNewMeals(): List<Meal>
+    suspend fun getNewMeals(): List<RecipeResponse>
+
+    /**
+     * Retrieve a recipe with specified id from the database.
+     */
+    suspend fun getRecipe(id: Int): RecipeResponse
 
 }

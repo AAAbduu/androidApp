@@ -3,6 +3,7 @@ package com.example.androidfinalassignment.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.androidfinalassignment.domain.Meal
+import com.example.androidfinalassignment.domain.RecipeResponse
 
 @Entity(tableName = "user_table")
 data class User(
@@ -17,8 +18,8 @@ data class User(
     val foodAllergies: String,
     val cuisineDislikes: String,
     val dietPreference: String,
-    val dailyRecipes: List<Meal> = emptyList(),
-    val pastRecipes: List<Meal> = emptyList()
+    val dailyRecipes: List<RecipeResponse> = emptyList(),
+    val pastRecipes: List<RecipeResponse> = emptyList()
 )
 
 

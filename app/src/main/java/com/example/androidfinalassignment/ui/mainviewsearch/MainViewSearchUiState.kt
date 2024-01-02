@@ -1,8 +1,8 @@
 package com.example.androidfinalassignment.ui.mainviewsearch
 
-import com.example.androidfinalassignment.domain.Meal
+import com.example.androidfinalassignment.domain.RecipeResponse
 
 data class MainViewSearchUiState(
     var query: String = "",
-    var foundMeals: List<Meal> = listOf()
+    var foundMeals: List<RecipeResponse> = listOf()
 )

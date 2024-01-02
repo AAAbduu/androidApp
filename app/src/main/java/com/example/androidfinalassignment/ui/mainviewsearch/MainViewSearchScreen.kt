@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.androidfinalassignment.domain.Meal
 import com.example.androidfinalassignment.ui.mainview.MainViewModelView
 import com.example.androidfinalassignment.ui.mainview.MainViewUiState
@@ -26,7 +28,7 @@ import com.example.androidfinalassignment.ui.util.RecipeCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainSearchViewBody(modifier: Modifier, mainViewSearchViewModel: MainViewSearchViewModel) {
+fun MainSearchViewBody(modifier: Modifier, mainViewSearchViewModel: MainViewSearchViewModel, navControllerUnregistered: NavController) {
 
     val mainViewSearchUiState = mainViewSearchViewModel.uiState.collectAsState()
     Column(
@@ -62,7 +64,7 @@ fun MainSearchViewBody(modifier: Modifier, mainViewSearchViewModel: MainViewSear
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ){
             items(mainViewSearchUiState.value.foundMeals.size){
-                RecipeCard(modifier = Modifier, meal = mainViewSearchUiState.value.foundMeals[it])
+                RecipeCard(modifier = Modifier, recipe = mainViewSearchUiState.value.foundMeals[it], navControllerUnregistered = navControllerUnregistered)
             }
         }
 
@@ -74,6 +76,8 @@ fun MainSearchViewBody(modifier: Modifier, mainViewSearchViewModel: MainViewSear
 @Preview(showBackground = true)
 fun MainSearchViewBodyPreview() {
     val mainViewSearchViewModel: MainViewSearchViewModel = viewModel(factory = MainViewSearchViewModel.Factory)
+    val navControllerUnregistered = rememberNavController()
 
-    MainSearchViewBody(modifier = Modifier, mainViewSearchViewModel = mainViewSearchViewModel)
+
+    MainSearchViewBody(modifier = Modifier, mainViewSearchViewModel = mainViewSearchViewModel, navControllerUnregistered = navControllerUnregistered)
 }

@@ -28,13 +28,13 @@ class MainViewSearchViewModel(/*rivate val mealsRepository: MealsRepository,*/ p
         findMeals()
     }
 
-    fun updateFoundMeals(foundMeals: List<Meal>) {
+    fun updateFoundMeals(foundMeals: List<RecipeResponse>) {
         _uiState.value = _uiState.value.copy(foundMeals = foundMeals)
     }
 
     private fun findMeals() {
         viewModelScope.launch {
-            var mealsRetrieved = listOf<Meal>()
+            var mealsRetrieved = listOf<RecipeResponse>()
 
             try {
                 val response = centralRepository.getAutocompletedTitleRecipe(
@@ -63,16 +63,8 @@ class MainViewSearchViewModel(/*rivate val mealsRepository: MealsRepository,*/ p
                         }
                         val mealInfo =
                             json.decodeFromString(RecipeResponse.serializer(), it.string())
-                        val newMeal = Meal(
-                            id = meal.id,
-                            title = meal.title,
-                            imageType = meal.imageType,
-                            readyInMinutes = 60,
-                            servings = 0,
-                            sourceUrl = "",
-                            image = mealInfo.image
-                        )
-                        mealsRetrieved += newMeal
+
+                        mealsRetrieved += mealInfo
                     }
 
                 }

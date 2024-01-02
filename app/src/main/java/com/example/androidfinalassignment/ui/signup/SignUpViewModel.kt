@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.androidfinalassignment.FinalAssignmentApplication
 import com.example.androidfinalassignment.data.User
 import com.example.androidfinalassignment.data.CentralRepository
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -19,7 +20,7 @@ import java.io.File.separator
 class SignUpViewModel(/*private val mealsRepository: MealsRepository,*/ private val centralRepository: CentralRepository) : ViewModel(){
 
     init {
-        //deleteAllUsers()
+        //deleteDatabase()
     }
 
     private val _uiState = MutableStateFlow(SignUpUiState())
@@ -74,7 +75,11 @@ class SignUpViewModel(/*private val mealsRepository: MealsRepository,*/ private 
         _uiState.value = _uiState.value.copy(cuisineDislikes = cuisineDislikes)
     }
 
-
+    private fun deleteDatabase() {
+        viewModelScope.launch {
+            centralRepository.delete()
+        }
+    }
 
     suspend fun createUser(
     ) {

@@ -265,7 +265,13 @@ fun SignUpScreen(
                         coroutineScope.launch {
                             signUpViewModel.createUser()
                         }
-                        navController.navigate("mainViewScreen")
+                        navController.navigate("mainViewScreen",builder = {
+                            // Specify the popUpTo and popUpToInclusive arguments
+                            popUpTo("signUpScreen") {
+                                // Set popUpToInclusive to true if you want to include the onBoardScreens destination
+                                inclusive = false
+                            }
+                        })
                     },
                     modifier = Modifier
                         .padding(vertical = 16.dp)

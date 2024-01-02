@@ -48,7 +48,8 @@ import com.example.androidfinalassignment.ui.util.RecipeCard
 @ExperimentalMaterial3Api
 @Composable
 fun MainViewScreenView(
-    navController: NavHostController,
+    navControllerUnregistered: NavController,
+    navControllerRegistered:  NavHostController,
     mainViewModelView : MainViewModelView
 ){
     val mainScreenUiState = mainViewModelView.uiState.collectAsState()
@@ -60,7 +61,7 @@ fun MainViewScreenView(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         bottomBar = {
             MainViewBottomBar(
-                navController = navController,
+                navController = navControllerRegistered,
                 mainViewModelView = mainViewModelView,
                 mainScreenUiState = mainScreenUiState.value
             )
@@ -72,13 +73,14 @@ fun MainViewScreenView(
             )
         }
     ) { innerPadding ->
-        NavHost(navController = navController, startDestination = "home") {
+        NavHost(navController = navControllerRegistered, startDestination = "home") {
             composable("home") {
                 MainHomeViewBody(
                     modifier = Modifier
                         .padding(innerPadding),
                     mainViewModelView = mainViewModelView,
-                    mainScreenUiState = mainScreenUiState.value
+                    mainScreenUiState = mainScreenUiState.value,
+                    navControllerUnregistered = navControllerUnregistered
                 )
             }
             composable("search") {
@@ -87,26 +89,12 @@ fun MainViewScreenView(
                     modifier = Modifier
                         .padding(innerPadding),
                     mainViewSearchViewModel = mainViewSearchViewModel,
-                )
-            }
-            composable("settings") {
-                MainSettingsViewBody(
-                    modifier = Modifier
-                        .padding(innerPadding),
-                    mainViewModelView = mainViewModelView,
-                    mainViewUiState = mainScreenUiState.value
+                    navControllerUnregistered = navControllerUnregistered
                 )
             }
         }
     }
 }
-
-@Composable
-fun MainSettingsViewBody(modifier: Modifier, mainViewModelView: MainViewModelView, mainViewUiState: MainViewUiState) {
-
-
-}
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -137,7 +125,8 @@ fun MainViewTopBar(
 fun MainHomeViewBody(
     modifier: Modifier = Modifier,
     mainViewModelView : MainViewModelView,
-    mainScreenUiState: MainViewUiState
+    mainScreenUiState: MainViewUiState,
+    navControllerUnregistered: NavController
 ) {
     LazyColumn(
         modifier = modifier
@@ -146,13 +135,14 @@ fun MainHomeViewBody(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = CenterHorizontally
     ){
-        mainScreenUiState.meals.forEach { meal ->
+        mainScreenUiState.meals.forEach { recipe ->
             item {
                 RecipeCard(
-                    meal = meal,
+                    recipe = recipe,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
+                        .height(200.dp),
+                    navControllerUnregistered = navControllerUnregistered
                 )
             }
         }
@@ -209,18 +199,6 @@ fun MainViewBottomBar(
                     contentDescription = "Search recipes"
                 )
             }
-            IconButton(
-                modifier = Modifier,
-                onClick = {
-                    mainViewModelView.updateSelectedTab(MainViewTabs.SETTINGS)
-                    navController.navigate("settings")
-                }
-            ){
-                Icon(
-                    imageVector = if (mainScreenUiState.selectedTab == MainViewTabs.SETTINGS)  Icons.Filled.Settings else Icons.Outlined.Settings ,
-                    contentDescription = "Configuration"
-                )
-            }
         }
     }
 
@@ -233,8 +211,10 @@ fun MainViewBottomBar(
 fun MainViewScreenPreview() {
     val navController = rememberNavController()
     val mainViewModelView: MainViewModelView = viewModel(factory = MainViewModelView.Factory)
+
     MainViewScreenView(
-        navController = navController,
+        navControllerRegistered = navController,
+        navControllerUnregistered = navController,
         mainViewModelView = mainViewModelView
     )
 }
