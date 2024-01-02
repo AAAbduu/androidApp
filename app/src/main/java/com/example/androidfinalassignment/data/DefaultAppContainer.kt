@@ -7,6 +7,8 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import android.content.Context
+import com.example.androidfinalassignment.network.RequestInterceptor
+import okhttp3.OkHttpClient
 
 
 /**
@@ -16,7 +18,14 @@ class DefaultAppContainer (private val context: Context): AppContainer {
     private val BASE_URL =
         "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
 
+    private val okHttpClient: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .addInterceptor(RequestInterceptor("X-RapidAPI-Key"))
+            .build()
+    }
+
     private val retrofit = Retrofit.Builder()
+        .client(okHttpClient)
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(BASE_URL)
         .build()

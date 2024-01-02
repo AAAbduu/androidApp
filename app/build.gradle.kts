@@ -24,7 +24,16 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     buildTypes {
+        debug {
+            project.properties["rapid.api.key"]?.let { rapidApiKey ->
+                buildConfigField("String", "API_KEY", "\"${rapidApiKey}\"")
+            }
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
