@@ -51,6 +51,6 @@ interface UserDao {
      * Delete the table in the database.
      */
     @Query("DELETE FROM user_table")
-    fun delete()
+    fun deleteTable()
 
 }

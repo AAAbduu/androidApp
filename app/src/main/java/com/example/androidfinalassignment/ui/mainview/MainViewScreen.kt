@@ -10,10 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -41,7 +39,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.androidfinalassignment.ui.mainviewsearch.MainSearchViewBody
-import com.example.androidfinalassignment.ui.mainviewsearch.MainViewSearchUiState
 import com.example.androidfinalassignment.ui.mainviewsearch.MainViewSearchViewModel
 import com.example.androidfinalassignment.ui.util.RecipeCard
 
@@ -107,7 +104,7 @@ fun MainViewScreenView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainViewTopBar(
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior?
 ) {
     CenterAlignedTopAppBar(
         modifier = Modifier

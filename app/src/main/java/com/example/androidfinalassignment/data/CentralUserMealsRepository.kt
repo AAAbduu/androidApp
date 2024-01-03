@@ -31,8 +31,8 @@ class CentralUserMealsRepository (private val userDao: UserDao, private val meal
 
     override suspend fun deleteUser(user: User) = userDao.delete(user)
 
-    override suspend fun delete() {
-        userDao.delete()
+    override suspend fun deleteTable() {
+        userDao.deleteTable()
     }
 
     override suspend fun getMealsDay(

@@ -55,6 +55,10 @@ class MainViewModelView (/*private val mealsRepository: MealsRepository,*/ priva
         }
     }*/
 
+    fun addMeal(meal: RecipeResponse){
+        _uiState.value = _uiState.value.copy(meals = _uiState.value.meals + meal)
+    }
+
     /**
      * refreshMeals is a function that retrieves new meals from the repository.
      */

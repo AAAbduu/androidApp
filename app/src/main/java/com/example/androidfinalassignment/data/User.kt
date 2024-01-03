@@ -12,7 +12,7 @@ import com.example.androidfinalassignment.domain.RecipeResponse
 data class User(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String,
+    var name: String,
     val weight: Float,
     val height: Float,
     val age: String,
@@ -21,7 +21,7 @@ data class User(
     val foodAllergies: String,
     val cuisineDislikes: String,
     val dietPreference: String,
-    val dailyRecipes: List<RecipeResponse> = emptyList(),
+    var dailyRecipes: List<RecipeResponse> = emptyList(),
     val pastRecipes: List<RecipeResponse> = emptyList()
 )
 

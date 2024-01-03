@@ -52,7 +52,6 @@ class MainActivity : ComponentActivity() {
             AndroidFinalAssignmentTheme {
                 NavHost(navController = navControllerUnregistered, startDestination = "splash") {
                     composable("splash") {
-                        val splashScreenViewModel: SplashScreenViewModel = viewModel(factory = SplashScreenViewModel.Factory)
                         SplashScreen(splashScreenViewModel = splashScreenViewModel, navController = navControllerUnregistered)
                     }
 

@@ -41,7 +41,7 @@ interface CentralRepository {
     /**
      * Delete the table in the database.
      */
-    suspend fun delete()
+    suspend fun deleteTable()
 
     /**
      * Retrieve 3 meals for a day from the API.
