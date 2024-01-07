@@ -10,7 +10,6 @@ interface MealsRepository {
     /**
      * Retrieve 3 meals for a day from the API.
      */
-
     suspend fun getMealsDay(
         timeFrame: String,
         targetCalories: Int,

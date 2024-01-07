@@ -96,7 +96,7 @@ class UserDaoTest {
     @Throws(Exception::class)
     fun deleteTable() = runBlocking{
         userDao.insertUser(userTest)
-        userDao.delete()
+        userDao.deleteTable()
         val allUsers = userDao.getAllItems()
         val users = allUsers.firstOrNull()
         assertEquals(users?.size, 0)
